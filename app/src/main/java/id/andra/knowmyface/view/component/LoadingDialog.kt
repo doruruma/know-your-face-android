@@ -19,4 +19,12 @@ class LoadingDialog : MyDialogFragment(
         return inflater.inflate(R.layout.dialog_loading, container, false)
     }
 
+    override fun onStart() {
+        super.onStart()
+        dialog.let {
+            it?.setCancelable(false)
+            it?.setCanceledOnTouchOutside(false)
+        }
+    }
+
 }

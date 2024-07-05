@@ -49,14 +49,4 @@ object PermissionHelper {
         )
     }
 
-    fun requestLocationPermissionCallback(
-        requestCode: Int,
-        grantResults: IntArray
-    ): Boolean {
-        if (requestCode == Constant.LOCATION_PERMISSION_REQUEST_CODE) {
-            return grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
-        }
-        return false
-    }
-
 }

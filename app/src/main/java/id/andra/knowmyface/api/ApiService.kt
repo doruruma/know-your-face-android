@@ -3,11 +3,11 @@ package id.andra.knowmyface.api
 import id.andra.knowmyface.api.request.LoginRequest
 import id.andra.knowmyface.api.request.RefreshTokenRequest
 import id.andra.knowmyface.api.response.LoginResponse
+import id.andra.knowmyface.api.response.MessageResponse
 import id.andra.knowmyface.api.response.UserResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Path
 
 interface ApiService {
 
@@ -19,5 +19,8 @@ interface ApiService {
 
     @GET("user/current")
     suspend fun getCurrentUser(): UserResponse
+
+    @GET("presence/check-status")
+    suspend fun checkPresenceStatus(): MessageResponse
 
 }

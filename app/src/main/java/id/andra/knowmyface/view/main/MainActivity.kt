@@ -1,5 +1,7 @@
 package id.andra.knowmyface.view.main
 
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.widget.Toast
@@ -9,12 +11,19 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
 import id.andra.knowmyface.databinding.ActivityMainBinding
+import id.andra.knowmyface.helper.Constant
 import id.andra.knowmyface.helper.PermissionHelper
+import id.andra.knowmyface.helper.SharedPreferenceHelper
+import id.andra.knowmyface.view.component.LoadingDialog
+import id.andra.knowmyface.view.component.alertDialog.MyAlertDialog
+import id.andra.knowmyface.view.recordPresence.RecordPresenceActivity
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var binding: ActivityMainBinding
+    private var loadingDialog: LoadingDialog? = null
+    private var alertDialog: MyAlertDialog? = null
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +40,8 @@ class MainActivity : AppCompatActivity() {
         // request camera permissions
         if (!PermissionHelper.isCameraPermissionGranted(this))
             PermissionHelper.requestCameraPermission(this)
+        val user = SharedPreferenceHelper.getUser(this)
+        viewModel.setUserName(user?.name.orEmpty())
         observeState()
         setEventListeners()
     }
@@ -42,36 +53,57 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // handle request location result
-        if (PermissionHelper.requestLocationPermissionCallback(
-                requestCode = requestCode,
-                grantResults = grantResults
-            )
-        ) {
-            if (viewModel.isWaitForLocationPerm.value == true) {
-                getLastLocation()
-                viewModel.setIsWaitForLocationPerm(false)
-            }
-        } else
-            Toast.makeText(
-                this,
-                "Aplikasi memerlukan akses lokasi!",
-                Toast.LENGTH_LONG
-            ).show()
+        if (requestCode == Constant.LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (viewModel.isWaitForLocationPerm.value == true) {
+                    getLastLocation()
+                    viewModel.setIsWaitForLocationPerm(false)
+                }
+            } else
+                Toast.makeText(
+                    this,
+                    "Aplikasi memerlukan akses lokasi!",
+                    Toast.LENGTH_LONG
+                ).show()
+        }
         // handle request camera result
-        if (!PermissionHelper.requestCameraPermissionCallback(
-                requestCode = requestCode,
-                grantResults = grantResults
+        if (requestCode == Constant.CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED)
+                Toast.makeText(
+                    this,
+                    "Aplikasi memerlukan akses kamera!",
+                    Toast.LENGTH_LONG
+                ).show()
+        }
+    }
+
+    private fun toggleLoadingDialog(isShow: Boolean) {
+        if (isShow) {
+            loadingDialog = LoadingDialog()
+            loadingDialog?.show(supportFragmentManager, "LOADING_DIALOG")
+            return
+        }
+        loadingDialog?.dismiss()
+    }
+
+    private fun toggleErrorDialog(isShow: Boolean) {
+        if (isShow) {
+            alertDialog = MyAlertDialog.getInstance(
+                title = "Kesalahan",
+                message = viewModel.checkStatusError.value.orEmpty(),
+                onSubmit = {
+                    viewModel.toggleShowErrorDialog(false)
+                }
             )
-        )
-            Toast.makeText(
-                this,
-                "Aplikasi memerlukan akses kamera!",
-                Toast.LENGTH_LONG
-            ).show()
+            alertDialog?.show(supportFragmentManager, "ALERT_DIALOG")
+            return
+        }
+        alertDialog?.dismiss()
     }
 
     private fun getLastLocation() {
         try {
+            viewModel.setIsLoading(true)
             val locationResult: Task<Location> = fusedLocationClient.lastLocation
             locationResult.addOnCompleteListener(this) { task ->
                 if (task.isSuccessful && task.result != null) {
@@ -80,13 +112,9 @@ class MainActivity : AppCompatActivity() {
                     val longitude = location.longitude
                     viewModel.setLatitude(latitude.toString())
                     viewModel.setLongitude(longitude.toString())
-                    viewModel.setIsRedirectToRecordPresence(true)
-                    Toast.makeText(
-                        this,
-                        "Latitude: $latitude, Longitude: $longitude",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    viewModel.checkPresenceStatus()
                 } else {
+                    viewModel.setIsLoading(false)
                     Toast.makeText(
                         this,
                         "Gagal mendapatkan lokasi, Pastikan GPS anda aktif!",
@@ -96,26 +124,37 @@ class MainActivity : AppCompatActivity() {
             }
         } catch (e: SecurityException) {
             e.printStackTrace()
+            viewModel.setIsLoading(false)
         }
     }
 
     private fun observeState() {
         viewModel.isRedirectToRecordPresence.observe(this) { value ->
             if (value) {
-                // TODO: open record presence activity
+                val intent = Intent(this, RecordPresenceActivity::class.java)
+                intent.putExtra("longitude", viewModel.longitude.value.orEmpty())
+                intent.putExtra("latitude", viewModel.latitude.value.orEmpty())
+                startActivity(intent)
+                viewModel.setIsRedirectToRecordPresence(false)
             }
+        }
+        viewModel.isLoading.observe(this) { value ->
+            toggleLoadingDialog(value)
+        }
+        viewModel.showErrorDialog.observe(this) { value ->
+            toggleErrorDialog(value)
         }
     }
 
     private fun setEventListeners() {
         binding.btnRecordPresence.setOnClickListener {
+            if (!PermissionHelper.isCameraPermissionGranted(this)) {
+                PermissionHelper.requestCameraPermission(this)
+                return@setOnClickListener
+            }
             if (!PermissionHelper.isLocationPermissionGranted(this)) {
                 viewModel.setIsWaitForLocationPerm(true)
                 PermissionHelper.requestLocationPermission(this)
-                return@setOnClickListener
-            }
-            if (!PermissionHelper.isCameraPermissionGranted(this)) {
-                PermissionHelper.requestCameraPermission(this)
                 return@setOnClickListener
             }
             getLastLocation()

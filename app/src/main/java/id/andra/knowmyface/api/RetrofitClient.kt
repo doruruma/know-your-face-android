@@ -13,7 +13,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 object RetrofitClient {
 
-    private const val BASE_URL = "http://192.168.100.5:8000/api/"
+    private const val BASE_URL = "http://192.168.1.16:8000/api/"
     private lateinit var retrofit: Retrofit
 
     fun init(context: Context) {
