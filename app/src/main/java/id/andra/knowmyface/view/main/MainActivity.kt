@@ -6,6 +6,7 @@ import android.location.Location
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -16,6 +17,7 @@ import id.andra.knowmyface.helper.PermissionHelper
 import id.andra.knowmyface.helper.SharedPreferenceHelper
 import id.andra.knowmyface.view.component.LoadingDialog
 import id.andra.knowmyface.view.component.alertDialog.MyAlertDialog
+import id.andra.knowmyface.view.login.LoginActivity
 import id.andra.knowmyface.view.recordPresence.RecordPresenceActivity
 
 class MainActivity : AppCompatActivity() {
@@ -54,7 +56,7 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // handle request location result
         if (requestCode == Constant.LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (viewModel.isWaitForLocationPerm.value == true) {
                     getLastLocation()
                     viewModel.setIsWaitForLocationPerm(false)
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         }
         // handle request camera result
         if (requestCode == Constant.CAMERA_PERMISSION_REQUEST_CODE) {
-            if (grantResults[0] != PackageManager.PERMISSION_GRANTED)
+            if (grantResults.isNotEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED)
                 Toast.makeText(
                     this,
                     "Aplikasi memerlukan akses kamera!",
@@ -131,11 +133,17 @@ class MainActivity : AppCompatActivity() {
     private fun observeState() {
         viewModel.isRedirectToRecordPresence.observe(this) { value ->
             if (value) {
+                viewModel.setIsRedirectToRecordPresence(false)
+                val checkStatusResponse = viewModel.checkStatusResponse.value?.message
+                if (checkStatusResponse == "${Constant.PRESENCE_CLOCKOUT_STATE}") {
+                    Toast.makeText(this, "Anda sudah absen hari ini", Toast.LENGTH_LONG).show()
+                    return@observe
+                }
                 val intent = Intent(this, RecordPresenceActivity::class.java)
                 intent.putExtra("longitude", viewModel.longitude.value.orEmpty())
                 intent.putExtra("latitude", viewModel.latitude.value.orEmpty())
+                intent.putExtra("presenceState", checkStatusResponse)
                 startActivity(intent)
-                viewModel.setIsRedirectToRecordPresence(false)
             }
         }
         viewModel.isLoading.observe(this) { value ->
@@ -158,6 +166,23 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             getLastLocation()
+        }
+        binding.btnLogout.setOnClickListener {
+            val builder = AlertDialog.Builder(this).apply {
+                setTitle(title)
+                setMessage("Anda yakin ingin keluar?")
+                setPositiveButton("Ya") { dialog, _ ->
+                    SharedPreferenceHelper.clear(this@MainActivity)
+                    dialog.dismiss()
+                    finish()
+                    startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                }
+                setNegativeButton("Batal") { dialog, _ ->
+                    dialog.dismiss()
+                }
+            }
+            val dialog = builder.create()
+            dialog.show()
         }
     }
 

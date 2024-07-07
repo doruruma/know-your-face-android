@@ -18,6 +18,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layoutTop"
             android:layout_width="0dp"
+            android:layout_marginTop="8dp"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@id/btnRecordPresence"
             app:layout_constraintEnd_toEndOf="parent"
@@ -33,13 +34,27 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+
+            <ImageView
+                android:id="@+id/btnLogout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ripple"
+                android:clickable="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_logout"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/red_darken_2" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:id="@+id/btnRecordPresence"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:background="@drawable/btn_primary"
             android:clickable="true"
             android:gravity="center"
@@ -49,8 +64,8 @@
             app:layout_constraintTop_toBottomOf="@id/layoutTop">
 
             <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="8dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_person_check" />

@@ -4,6 +4,7 @@ import android.content.Context
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import id.andra.knowmyface.api.interceptor.TokenAuthenticator
+import id.andra.knowmyface.helper.Constant
 import id.andra.knowmyface.helper.SharedPreferenceHelper
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -13,7 +14,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 object RetrofitClient {
 
-    private const val BASE_URL = "http://192.168.1.16:8000/api/"
+    private const val BASE_URL = "${Constant.APIENDPOINT}api/"
     private lateinit var retrofit: Retrofit
 
     fun init(context: Context) {

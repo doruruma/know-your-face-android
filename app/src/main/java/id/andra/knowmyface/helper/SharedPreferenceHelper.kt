@@ -49,4 +49,9 @@ object SharedPreferenceHelper {
         return prefs.getString(REFRESH_TOKEN, null)
     }
 
+    fun clear(context: Context) {
+        val prefs = getSharedPreferences(context)
+        prefs.edit().clear().apply()
+    }
+
 }

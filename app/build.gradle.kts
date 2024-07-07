@@ -35,6 +35,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    androidResources {
+        noCompress += listOf("tflite")
+    }
 }
 
 dependencies {
@@ -57,5 +60,8 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.play.services.location)
+    implementation(libs.tensorflow.lite)
+    implementation(libs.face.detection)
+    implementation(libs.kotlinx.serialization.json)
 
 }

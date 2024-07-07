@@ -1,7 +1,5 @@
 package id.andra.knowmyface.api
 
-import id.andra.knowmyface.extension.handleThrowable
-
 sealed class Resource<T>(
     val data: T? = null,
     val error: Throwable? = null,
