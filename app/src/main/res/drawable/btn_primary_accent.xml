@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <ripple android:color="?android:attr/colorControlHighlight">
+            <item>
+                <shape>
+                    <solid android:color="@color/indigo_accent" />
+                    <corners android:radius="4dp" />
+                    <padding android:bottom="12dp" android:left="12dp" android:right="12dp" android:top="12dp" />
+                </shape>
+            </item>
+        </ripple>
+    </item>
+
+</selector>

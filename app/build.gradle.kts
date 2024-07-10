@@ -63,5 +63,6 @@ dependencies {
     implementation(libs.tensorflow.lite)
     implementation(libs.face.detection)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.picasso)
 
 }

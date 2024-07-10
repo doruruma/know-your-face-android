@@ -18,6 +18,7 @@ import id.andra.knowmyface.helper.SharedPreferenceHelper
 import id.andra.knowmyface.view.component.LoadingDialog
 import id.andra.knowmyface.view.component.alertDialog.MyAlertDialog
 import id.andra.knowmyface.view.login.LoginActivity
+import id.andra.knowmyface.view.presenceHistory.PresenceHistoryActivity
 import id.andra.knowmyface.view.recordPresence.RecordPresenceActivity
 
 class MainActivity : AppCompatActivity() {
@@ -183,6 +184,12 @@ class MainActivity : AppCompatActivity() {
             }
             val dialog = builder.create()
             dialog.show()
+        }
+        binding.btnProfile.setOnClickListener {
+
+        }
+        binding.btnHistory.setOnClickListener {
+            startActivity(Intent(this, PresenceHistoryActivity::class.java))
         }
     }
 

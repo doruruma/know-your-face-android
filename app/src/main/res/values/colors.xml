@@ -12,4 +12,6 @@
     <color name="grey_lighten_4">#F5F5F5</color>
     <color name="red_darken_2">#D32F2F</color>
     <color name="indigo">#3F51B5</color>
+    <color name="indigo_accent">#8C9EFF</color>
+    <color name="green">#4CAF50</color>
 </resources>

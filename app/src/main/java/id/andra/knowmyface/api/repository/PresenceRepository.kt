@@ -1,15 +1,27 @@
 package id.andra.knowmyface.api.repository
 
+import android.util.Log
 import id.andra.knowmyface.api.Resource
 import id.andra.knowmyface.api.RetrofitClient
 import id.andra.knowmyface.api.request.PresenceRequest
 import id.andra.knowmyface.api.response.MessageResponse
 import id.andra.knowmyface.api.response.PresenceResponse
+import id.andra.knowmyface.api.response.PresencesResponse
 import id.andra.knowmyface.extension.handleThrowable
 import id.andra.knowmyface.helper.DateUtil
 import id.andra.knowmyface.helper.ParamUtil
 
 class PresenceRepository {
+
+    suspend fun getPresences(page: Int): Resource<PresencesResponse> {
+        return try {
+            val response = RetrofitClient.apiService.getPresences(page = page)
+            Resource.Success(response)
+        } catch (e: Throwable) {
+            Log.d("PRESENCE-ERROR", "${e.message}")
+            Resource.Error(error = e.handleThrowable())
+        }
+    }
 
     suspend fun checkStatus(): Resource<MessageResponse> {
         return try {

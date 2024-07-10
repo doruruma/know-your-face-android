@@ -1,7 +1,7 @@
 package id.andra.knowmyface.helper
 
 object Constant {
-    const val APIENDPOINT = "http://192.168.1.8:8000/"
+    const val APIENDPOINT = "http://192.168.1.18:8000/"
     const val LOCATION_PERMISSION_REQUEST_CODE = 1
     const val CAMERA_PERMISSION_REQUEST_CODE = 2
     const val CROP_SIZE = 1000

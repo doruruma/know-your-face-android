@@ -5,6 +5,7 @@ import id.andra.knowmyface.api.request.RefreshTokenRequest
 import id.andra.knowmyface.api.response.LoginResponse
 import id.andra.knowmyface.api.response.MessageResponse
 import id.andra.knowmyface.api.response.PresenceResponse
+import id.andra.knowmyface.api.response.PresencesResponse
 import id.andra.knowmyface.api.response.UserResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -13,6 +14,7 @@ import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Query
 
 interface ApiService {
 
@@ -27,6 +29,9 @@ interface ApiService {
 
     @GET("presence/check-status")
     suspend fun checkPresenceStatus(): MessageResponse
+
+    @GET("presences")
+    suspend fun getPresences(@Query("page") page: Int): PresencesResponse
 
     @Multipart
     @POST("presence/clock-in")
