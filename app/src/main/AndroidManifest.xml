@@ -55,6 +55,11 @@
             android:configChanges="orientation"
             android:exported="true"
             android:launchMode="singleTask" />
+        <activity
+            android:name=".view.profile.ProfileActivity"
+            android:configChanges="orientation"
+            android:exported="true"
+            android:launchMode="singleTask" />
     </application>
 
 </manifest>

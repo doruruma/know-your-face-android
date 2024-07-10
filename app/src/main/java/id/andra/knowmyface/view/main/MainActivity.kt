@@ -19,6 +19,7 @@ import id.andra.knowmyface.view.component.LoadingDialog
 import id.andra.knowmyface.view.component.alertDialog.MyAlertDialog
 import id.andra.knowmyface.view.login.LoginActivity
 import id.andra.knowmyface.view.presenceHistory.PresenceHistoryActivity
+import id.andra.knowmyface.view.profile.ProfileActivity
 import id.andra.knowmyface.view.recordPresence.RecordPresenceActivity
 
 class MainActivity : AppCompatActivity() {
@@ -186,7 +187,7 @@ class MainActivity : AppCompatActivity() {
             dialog.show()
         }
         binding.btnProfile.setOnClickListener {
-
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
         binding.btnHistory.setOnClickListener {
             startActivity(Intent(this, PresenceHistoryActivity::class.java))

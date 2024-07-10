@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import id.andra.knowmyface.R
 import id.andra.knowmyface.databinding.ItemPresenceBinding
 import id.andra.knowmyface.helper.Constant
 import id.andra.knowmyface.model.Presence
@@ -37,6 +38,13 @@ class PresenceAdapter(
                 View.GONE
         binding.imgClockOut.visibility = clockOutVisibility
         binding.btnLookMapClockOut.visibility = clockOutVisibility
+        val statusColor =
+            if (item.isLate == 1)
+                R.color.red_darken_2
+            else
+                R.color.green
+        binding.txtStatus.setTextColor(act.getColor(statusColor))
+        binding.txtStatus.text = item.isLateLabel
         binding.txtDate.text = item.createdAt
         binding.txtClockIn.text = item.timeIn
         binding.txtClockOut.text = item.timeOut ?: "-"

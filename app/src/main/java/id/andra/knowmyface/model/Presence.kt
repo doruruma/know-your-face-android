@@ -9,6 +9,10 @@ data class Presence(
     val id: Int = 0,
     @Json(name = "user_id")
     val userId: Int = 0,
+    @Json(name = "is_late")
+    val isLate: Int = 0,
+    @Json(name = "is_late_label")
+    val isLateLabel: String = "",
     @Json(name = "user")
     val user: User = User(),
     @Json(name = "schedule_time_in")
